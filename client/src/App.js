@@ -4,11 +4,9 @@ import { useSelector } from 'react-redux';
 import { Route, Switch, Redirect } from 'react-router-dom';
 
 // css //
-import 'bootstrap/dist/css/bootstrap.min.css';
-// import './assets/css/animate.min.css';
-// import './assets/css/demo.css';
+// import 'bootstrap/dist/css/bootstrap.min.css';
 import '@fortawesome/fontawesome-free/css/all.min.css';
-import 'antd/dist/antd.css';
+// import 'antd/dist/antd.css';
 
 /* Internal Libraries */
 import AdminLayout from 'layouts/Admin.js';
