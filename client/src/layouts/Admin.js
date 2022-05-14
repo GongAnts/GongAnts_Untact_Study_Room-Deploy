@@ -48,17 +48,25 @@ function Admin() {
   }, [location]);
   return (
     <>
-      <div className="wrapper">
-        <Sidebar color={color} image={hasImage ? image : ''} routes={routes} />
-        <div className="main-panel" ref={mainPanel}>
+      <div className="wrapper relative">
+        <div class="drawer">
           <AdminNavbar />
-          <div className="content">
+        </div>
+        <div className="static" ref={mainPanel}>
+          <Sidebar
+            color={color}
+            image={hasImage ? image : ''}
+            routes={routes}
+          />
+          <div className="float-left">
             <Switch>
               {getRoutes(routes)}
               <Route path={`/admin/memo/write`} exact component={MemoWrite} />
               <Route path={`/admin/memo/:id/edit`} exact component={MemoEdit} />
             </Switch>
           </div>
+        </div>
+        <div>
           <Footer />
         </div>
       </div>
