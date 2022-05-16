@@ -25,7 +25,7 @@ const loginUserAPI = (loginData) => {
     },
   };
 
-  return axios.post('/signin', loginData, config);
+  return axios.post('/auth/signin', loginData, config);
 };
 
 function* loginUser(loginaction) {
@@ -36,7 +36,6 @@ function* loginUser(loginaction) {
       type: LOGIN_SUCCESS,
       payload: result.data,
     });
-    yield push('/admin/dashboard');
   } catch (e) {
     yield put({
       type: LOGIN_FAILURE,
@@ -56,7 +55,7 @@ const signUpAPI = (registerData) => {
       'Content-Type': 'application/json',
     },
   };
-  return axios.post('/signup', registerData, config);
+  return axios.post('/auth/signup', registerData, config);
 };
 
 function* registerUser(action) {
@@ -67,9 +66,8 @@ function* registerUser(action) {
       type: REGISTER_SUCCESS,
       payload: result,
     });
+    yield put(push(`/auth`));
   } catch (e) {
-    // alert(`${e.response.data.msg}`);
-
     yield put({
       type: REGISTER_FAILURE,
       payload: e.response,
@@ -110,23 +108,13 @@ const userLoadingAPI = (token) => {
       'Content-Type': 'application/json',
     },
   };
-  axios.get('http://localhost:4000/').then((res) => {
-    console.log(res.data);
-  });
-  return axios.get('http://localhost:4000/', config);
+  return axios.get('/auth', config);
 };
 
 function* userLoading(action) {
   try {
     const result = yield call(userLoadingAPI, action.payload);
     console.log(result.data);
-    if (result.data.msg !== undefined) {
-      console.log('유저로딩 실패');
-      yield put({
-        type: USER_LOADING_FAILURE,
-        payload: e.response,
-      });
-    }
     yield put({
       type: USER_LOADING_SUCCESS,
       payload: result.data,

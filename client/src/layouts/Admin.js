@@ -1,20 +1,3 @@
-/*!
-
-=========================================================
-* Light Bootstrap Dashboard React - v2.0.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/light-bootstrap-dashboard-react
-* Copyright 2020 Creative Tim (https://www.creative-tim.com)
-* Licensed under MIT (https://github.com/creativetimofficial/light-bootstrap-dashboard-react/blob/master/LICENSE.md)
-
-* Coded by Creative Tim
-
-=========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-*/
 import React, { Component } from 'react';
 import { useLocation, Route, Switch } from 'react-router-dom';
 
@@ -65,17 +48,25 @@ function Admin() {
   }, [location]);
   return (
     <>
-      <div className="wrapper">
-        <Sidebar color={color} image={hasImage ? image : ''} routes={routes} />
-        <div className="main-panel" ref={mainPanel}>
+      <div className="wrapper relative">
+        <div class="drawer">
           <AdminNavbar />
-          <div className="content">
+        </div>
+        <div className="static" ref={mainPanel}>
+          <Sidebar
+            color={color}
+            image={hasImage ? image : ''}
+            routes={routes}
+          />
+          <div className="float-left">
             <Switch>
               {getRoutes(routes)}
               <Route path={`/admin/memo/write`} exact component={MemoWrite} />
               <Route path={`/admin/memo/:id/edit`} exact component={MemoEdit} />
             </Switch>
           </div>
+        </div>
+        <div>
           <Footer />
         </div>
       </div>
