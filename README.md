@@ -24,3 +24,6 @@
 
 - v1.0.4
   - api-doc todo
+
+- v1.0.5
+  - Restful API refactor : memo API, schedule API
