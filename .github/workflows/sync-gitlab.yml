@@ -1,0 +1,27 @@
+name: Sync this repository to another repository
+
+on:
+  push:
+
+  workflow_dispatch:
+
+jobs:
+  push-to-gitlab:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0 
+
+      - name: Set remote repository
+        env: 
+          gitlab_url: 'https://lab.hanium.or.kr/22_HF077/GongAnts_Untact_Study_Room.git'
+          gitlab_username: ${{ secrets.GITLAB_USERNAME }}
+          gitlab_token: ${{ secrets.GITLAB_TOKEN }}
+        run: | 
+          git remote add gitlab https://${gitlab_username}:${gitlab_token}@${gitlab_url#https://};
+      - name: Force push everthing
+        run: | 
+          git push -f --all gitlab;
+          git push -f --tags gitlab;

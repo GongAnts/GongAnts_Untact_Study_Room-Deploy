@@ -41,7 +41,7 @@ router.get('/monthly', (req, res) => {
   }
 
   const sql = `SELECT * FROM schedule WHERE user_id = '${user_id}' \
-    AND DATE_FORMAT(schedule_date, '%Y-%c') BETWEEN '${year}-${month}' AND '${year}-${month}'`;
+    AND DATE_FORMAT(schedule_date, '%Y-%m') BETWEEN '${year}-${month}' AND '${year}-${month}'`;
   db.query(sql, (err, data) => {
     if (!err) {
       res.status(200).send(data);
@@ -72,10 +72,6 @@ router.post('/', (req, res) => {
     schedule_description: `${schedule_description}`,
     schedule_date: `${schedule_date}`,
   };
-<<<<<<< HEAD
-  console.log(schedule_data);
-=======
->>>>>>> 5e251624f7c7ed59bafe6fabecb94802b85beb5a
   const sql = `INSERT INTO schedule(user_id, schedule_title, schedule_date, schedule_description) VALUES('${user_id}', '${schedule_title}', '${schedule_date}', '${schedule_description}')`;
   db.query(sql, (err, data) => {
     if (!err) {
@@ -87,11 +83,7 @@ router.post('/', (req, res) => {
 });
 
 // request URL Example : http://localhost:4000/schedule/detail?id=1
-<<<<<<< HEAD
-router.get('/detail', (req, res) => {
-=======
 router.get('/', (req, res) => {
->>>>>>> 5e251624f7c7ed59bafe6fabecb94802b85beb5a
   const schedule_id = req.query.id;
   const sql = `SELECT * FROM schedule WHERE schedule_id = '${schedule_id}'`;
   db.query(sql, (err, data) => {

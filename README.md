@@ -27,3 +27,8 @@
 
 - v1.0.5
   - Restful API refactor : memo API, schedule API
+
+- v1.0.6
+  - 클라이언트 적용
+  - socket, room 기능 적용
+  - ci/cd 기본 파일 추가

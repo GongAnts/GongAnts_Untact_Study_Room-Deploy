@@ -1,9 +1,25 @@
+require('dotenv').config();
 const express = require('express');
 const app = express();
+const socketio = require('socket.io');
+const httpServer = require('http').createServer(app);
+const socketadmin = require('@socket.io/admin-ui');
 const HOST = process.env.HOST || 'localhost';
 const PORT = process.env.PORT || 4000;
 const cors = require('cors');
 const bcrypt = require('bcrypt');
+
+// admin-socket.io
+const wsServer = new socketio.Server(httpServer, {
+  cors: {
+    origin: ['https://admin.socket.io'],
+    credentials: true,
+  },
+});
+
+socketadmin.instrument(wsServer, {
+  auth: false, // pw
+});
 
 // routing
 const signupRouter = require('./routes/signup');
@@ -12,10 +28,16 @@ const memoRouter = require('./routes/memo');
 const studytimeRouter = require('./routes/studytime');
 const todoRouter = require('./routes/todo');
 
-// session setting
-const db = require('./config/db');
-const session_db = require('./config/session_db.json');
-const googleCredentials = require('./config/google.json');
+// db setting
+const main_db = require('./config/db');
+const session_db = {
+  host: process.env.DB_HOST,
+  port: process.env.DB_PORT,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_SESSION_DATABASE,
+};
+
 const session = require('express-session');
 const MySQLStore = require('express-mysql-session')(session);
 app.use(express.static('public'));
@@ -30,19 +52,54 @@ const passport = require('passport'),
   LocalStrategy = require('passport-local').Strategy,
   GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 
-var options = {
-  host: session_db.db.host,
-  port: session_db.db.port,
-  user: session_db.db.user,
-  password: session_db.db.password,
-  database: session_db.db.database,
-};
+function publicRooms() {
+  // const sids = wsServer.sockets.adapter.sids;
+  // const rooms = wsServer.sockets.adapter.rooms;
+
+  console.log(wsServer.sockets.adapter.rooms);
+  const {
+    sockets: {
+      adapter: { sids, rooms },
+    },
+  } = wsServer;
+
+  const publicRooms = [];
+  rooms.forEach((_, key) => {
+    // key 가 있으면 public room
+    if (sids.get(key) === undefined) {
+      publicRooms.push(key);
+    }
+  });
+  return publicRooms;
+}
+
+function countRoom(roomName) {
+  return wsServer.sockets.adapter.rooms.get(roomName)?.size;
+}
+wsServer.on('connection', (socket) => {
+  console.log(wsServer.sockets.adapter);
+  socket.on('join_room', async (roomName, done) => {
+    socket.join(roomName);
+    socket.to(roomName).emit('welcome');
+  });
+
+  socket.on('offer', (offer, roomName) => {
+    socket.to(roomName).emit('offer', offer);
+  });
+
+  socket.on('answer', (answer, roomName) => {
+    socket.to(roomName).emit('answer', answer);
+  });
+  socket.on('ice', (ice, roomName) => {
+    socket.to(roomName).emit('ice', ice);
+  });
+});
 
 app.use(
   session({
     key: 'session_cookie_name',
     secret: 'session_cookie_secret',
-    store: new MySQLStore(options),
+    store: new MySQLStore(session_db),
     resave: false,
     saveUninitialized: true,
     cookie: {
@@ -110,9 +167,9 @@ passport.use(
 passport.use(
   new GoogleStrategy(
     {
-      clientID: googleCredentials.web.client_id,
-      clientSecret: googleCredentials.web.client_secret,
-      callbackURL: googleCredentials.web.redirect_uris[0],
+      clientID: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      callbackURL: process.env.GOOGLE_REDIRECT_URIS,
     },
     function (accessToken, refreshToken, profile, cb) {
       const userdata = {
@@ -123,7 +180,7 @@ passport.use(
       };
       try {
         const sql1 = `SELECT COUNT(*) AS result FROM user WHERE user_email = '${profile.emails[0].value}'`;
-        db.query(sql1, (err, data) => {
+        main_db.query(sql1, (err, data) => {
           if (!err) {
             // 동일 user_email 존재
             if (data[0].result > 0) {
@@ -131,7 +188,7 @@ passport.use(
               return cb(null, userdata);
             } else {
               const sql2 = `INSERT INTO user(user_id, user_type, user_name, user_email) VALUES('g${profile.id}', 'google', '${profile.displayName}', '${profile.emails[0].value}')`;
-              db.query(sql2, (err, data) => {
+              main_db.query(sql2, (err, data) => {
                 if (!err) {
                   console.log('DB 저장 성공');
                   return cb(null, userdata);
@@ -197,6 +254,10 @@ app.use('/memo', memoRouter);
 app.use('/studytime', studytimeRouter);
 app.use('/todo', todoRouter);
 
-app.listen(PORT, () => {
+httpServer.listen(PORT, () => {
   console.log(`Server On : http://${HOST}:${PORT}/`);
 });
+
+// httpServer.listen(PORT, () => {
+//   console.log(`Server On : http://${HOST}:${PORT}/`);
+// });
