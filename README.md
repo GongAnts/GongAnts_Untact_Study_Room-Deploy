@@ -32,3 +32,8 @@
   - 클라이언트 적용
   - socket, room 기능 적용
   - ci/cd 기본 파일 추가
+
+- v1.0.7
+  - 배포용 Repository 분리
+  - google auth, socket.io Error Fix
+  - ci 스크립트 수정
