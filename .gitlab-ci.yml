@@ -1,20 +1,21 @@
+stages:
+  - server_build
+  - client_build
+
 image: node:latest
-
-services:
-  - mysql:latest
-  - redis:latest
-  - postgres:latest
-
-cache:
-  paths:
-    - node_modules/
-
-test_async:
+      
+server_build:
+  stage: server_build
   script:
-    - npm install
-    - node ./specs/start.js ./specs/async.spec.js
-
-test_db:
+    - cd /builds/22_HF077/gongants_untact_study_room-deploy/server/
+    - npm i apidoc -g
+    - npm run deploy:install
+    - npm run deploy:production
+                 
+client_build:
+  stage: client_build
   script:
-    - npm install
-    - node ./specs/start.js ./specs/db-postgres.spec.js
+    - cd /builds/22_HF077/gongants_untact_study_room-deploy/client/
+    - npm run deploy:install
+    - npm run deploy:production
+

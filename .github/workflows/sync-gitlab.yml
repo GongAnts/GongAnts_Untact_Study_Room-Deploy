@@ -16,7 +16,7 @@ jobs:
 
       - name: Set remote repository
         env: 
-          gitlab_url: 'https://lab.hanium.or.kr/22_HF077/GongAnts_Untact_Study_Room.git'
+          gitlab_url: ${{ secrets.GITLAB_URL }}
           gitlab_username: ${{ secrets.GITLAB_USERNAME }}
           gitlab_token: ${{ secrets.GITLAB_TOKEN }}
         run: | 
