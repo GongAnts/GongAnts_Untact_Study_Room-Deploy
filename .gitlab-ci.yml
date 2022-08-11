@@ -1,20 +1,68 @@
-image: node:latest
+name: Gongants CI
 
-services:
-  - mysql:latest
-  - redis:latest
-  - postgres:latest
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
 
-cache:
-  paths:
-    - node_modules/
+jobs:
+  build:
 
-test_async:
-  script:
-    - npm install
-    - node ./specs/start.js ./specs/async.spec.js
+    runs-on: ubuntu-latest
 
-test_db:
-  script:
-    - npm install
-    - node ./specs/start.js ./specs/db-postgres.spec.js
+    strategy:
+      matrix:
+        node-version: [16.x]
+
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+          
+      - name: Pre setting
+        run: |
+          npm i pm2 apidoc -g
+          pm2 kill
+      
+      - name: Server setting
+        run: |
+          cd ./server/
+          sed -i.bak -e 's/http:\/\/localhost:4000/'${{ secrets.URL }}'/g' apidoc.json
+          npm install:clean
+          npm deploy:install
+        env:
+          CLIENT_HOST: ${{ secrets.CLIENT_HOST }}
+          CLIENT_PORT: ${{ secrets.CLIENT_PORT }}
+          SERVER_HOST: ${{ secrets.SERVER_HOST }}
+          SERVER_PORT: ${{ secrets.SERVER_PORT }}
+          URL=: ${{ secrets.URL }}
+          DB_HOST= ${{ secrets.DB_HOST }}
+          DB_PORT= ${{ secrets.DB_PORT }}
+          DB_USER= ${{ secrets.DB_USER }}
+          DB_PASSWORD= ${{ secrets.DB_PASSWORD }}
+          DB_MAIN_DATABASE= ${{ secrets.DB_MAIN_DATABASE }}
+          DB_SESSION_DATABASE= ${{ secrets.DB_SESSION_DATABASE }}
+          GOOGLE_CLIENT_ID= ${{ secrets.GOOGLE_CLIENT_ID }}
+          GOOGLE_CLIENT_SECRET= ${{ secrets.GOOGLE_CLIENT_SECRET }}
+          GOOGLE_REDIRECT_URIS= ${{ secrets.GOOGLE_REDIRECT_URIS }}
+      
+      - name: Server run
+          npm deploy:production
+                 
+      - name: Client setting
+        run: |
+          cd ../client/
+          npm install:clean
+          npm deploy:install
+          npm deploy:production
+        env:
+          SERVER_HOST= ${{ secrets.SERVER_HOST }}
+          SERVER_PORT= ${{ secrets.SERVER_PORT }}
+          REACT_APP_BASIC_SERVER_URL= ${{ REACT_APP_BASIC_SERVER_URL }}
+      
+       - name: Client run
+          npm deploy:production
