@@ -37,3 +37,7 @@
   - 배포용 Repository 분리
   - google auth, socket.io Error Fix
   - ci 스크립트 수정
+
+- v1.0.8
+  - remove memo feature
+  - 도메인 연결
