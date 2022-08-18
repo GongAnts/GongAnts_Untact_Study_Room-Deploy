@@ -1,21 +1,15 @@
 stages:
-  - server_build
-  - client_build
+  - build
 
 image: node:latest
       
-server_build:
-  stage: server_build
-  script:
-    - cd /builds/22_HF077/gongants_untact_study_room-deploy/server/
-    - npm i apidoc -g
-    - npm run deploy:install
-    - npm run deploy:production
-                 
-client_build:
-  stage: client_build
+build:
+  stage: build
   script:
     - cd /builds/22_HF077/gongants_untact_study_room-deploy/client/
     - npm run deploy:install
-    - npm run deploy:production
-
+    - cd /builds/22_HF077/gongants_untact_study_room-deploy/server/
+    - npm i apidoc -g
+    - npm run deploy:install
+    - npm run dev
+                 
