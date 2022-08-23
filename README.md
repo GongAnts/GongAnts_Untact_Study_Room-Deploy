@@ -41,3 +41,7 @@
 - v1.0.8
   - remove memo feature
   - 도메인 연결
+
+- v1.0.9
+  - client 대시보드 디자인 반영
+
