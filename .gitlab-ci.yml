@@ -1,7 +1,7 @@
 stages:
   - build
 
-image: node:latest
+image: node:16.16.0
       
 build:
   stage: build
