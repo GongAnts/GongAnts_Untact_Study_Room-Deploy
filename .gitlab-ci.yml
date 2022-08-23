@@ -6,10 +6,9 @@ image: node:latest
 build:
   stage: build
   script:
-    - cd /builds/22_HF077/gongants_untact_study_room-deploy/client/
+    - cd /builds/22_HF077/deploy-gongants_untact_study_room/client/
     - npm run deploy:install
-    - cd /builds/22_HF077/gongants_untact_study_room-deploy/server/
+    - cd /builds/22_HF077/deploy-gongants_untact_study_room/server/
     - npm i apidoc -g
     - npm run deploy:install
     - npm run dev
-                 
