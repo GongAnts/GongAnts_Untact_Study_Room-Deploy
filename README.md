@@ -45,3 +45,6 @@
 - v1.0.9
   - client 대시보드 디자인 반영
 
+- v1.0.10
+  - client 친구 찾기 UI
+  - server schedule category
