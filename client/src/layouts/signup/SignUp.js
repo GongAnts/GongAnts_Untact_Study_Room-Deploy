@@ -5,9 +5,6 @@ import { REGISTER_REQUEST } from 'redux/types.js';
 // UI components //
 import AccountBoxIcon from '@mui/icons-material/AccountBox';
 import LockIcon from '@mui/icons-material/Lock';
-import MailIcon from '@mui/icons-material/Mail';
-import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
-import Button from '@mui/material/Button';
 
 function SignUp() {
   const [form, setValue] = useState({
@@ -31,7 +28,7 @@ function SignUp() {
       e.preventDefault();
       const { user_id, user_name, user_email, user_password, passwordCheck } =
         form;
-      // console.log(user_id, user_email, user_password);
+      console.log(user_id, user_email, user_password);
 
       if (user_password !== passwordCheck) {
         alert('비밀번호와 비밀번호 확인은 같아야 합니다.');
@@ -52,7 +49,7 @@ function SignUp() {
       <section className="bg-gray-200 h-screen w-screen flex justify-center items-center">
         <div className="shadow-lg w-96 rounded-lg h-3/6 bg-white">
           <div className="text-center">
-            <div className="signup-form mt-12">
+            <div className="signup-form">
               <h2 className="text-3xl m-3 font-medium">회원가입</h2>
               <form method="POST" id="login-form">
                 <div className="form-group mt-5">
@@ -60,7 +57,6 @@ function SignUp() {
                     <AccountBoxIcon></AccountBoxIcon>
                   </label>
                   <input
-                    className="input-sm"
                     type="text"
                     name="user_id"
                     id="user_id"
@@ -70,10 +66,21 @@ function SignUp() {
                 </div>
                 <div className="form-group">
                   <label for="user_name">
-                    <AssignmentIndIcon></AssignmentIndIcon>
+                    <AccountBoxIcon></AccountBoxIcon>
                   </label>
                   <input
-                    className="input-sm"
+                    type="text"
+                    name="user_id"
+                    id="user_id"
+                    placeholder="Your ID"
+                    onChange={onChangeValue}
+                  />
+                </div>
+                <div className="form-group">
+                  <label for="user_name">
+                    <AccountBoxIcon></AccountBoxIcon>
+                  </label>
+                  <input
                     type="text"
                     name="user_name"
                     id="user_name"
@@ -83,10 +90,9 @@ function SignUp() {
                 </div>
                 <div className="form-group">
                   <label for="user_email">
-                    <MailIcon></MailIcon>
+                    <LockIcon></LockIcon>
                   </label>
                   <input
-                    className="input-sm"
                     type="email"
                     name="user_email"
                     id="user_email"
@@ -99,7 +105,6 @@ function SignUp() {
                     <LockIcon></LockIcon>
                   </label>
                   <input
-                    className="input-sm"
                     type="password"
                     name="user_password"
                     id="user_password"
@@ -112,7 +117,6 @@ function SignUp() {
                     <LockIcon></LockIcon>
                   </label>
                   <input
-                    className="input-sm"
                     type="password"
                     name="passwordCheck"
                     id="passwordCheck"
@@ -121,14 +125,14 @@ function SignUp() {
                   />
                 </div>
                 <div className="form-group form-button mt-5">
-                  <Button
+                  <input
                     type="submit"
-                    className="w-3/5"
-                    variant="contained"
+                    name="signup"
+                    id="signup"
+                    className="btn"
+                    value="Sign Up"
                     onClick={onSubmit}
-                  >
-                    Sign Up
-                  </Button>
+                  />
                 </div>
               </form>
             </div>

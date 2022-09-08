@@ -1,25 +1,19 @@
-require('dotenv').config();
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router';
-import { useLocation } from 'react-router-dom';
 import io from 'socket.io-client';
 
 // UI component //
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faMicrophone,
-  faMicrophoneSlash,
+  faMicrophoneSlash, 
   faVideo,
-  faVideoSlash,
+  faVideoSlash
 } from '@fortawesome/free-solid-svg-icons';
 import { Container } from 'react-bootstrap';
 import { Button, Select } from 'antd';
 
-const SERVER_HOST = process.env.SERVER_HOST || 'localhost';
-const SERVER_PORT = process.env.SERVER_PORT || 4000;
-const socket = io(`http://${SERVER_HOST}:${SERVER_PORT}`, {
-  transports: ['websocket', 'polling', 'flashsocket'],
-});
+const socket = io('http://localhost:4000'); // 서버 주소
 
 function RoomEnter(req) {
   const myFaceSrc = useRef(null);
@@ -29,8 +23,7 @@ function RoomEnter(req) {
   const [cameraOff, setcameraOff] = useState(true);
   const [cameraBtn, setcameraBtn] = useState('Turn Camera Off');
   let options = [];
-  const location = useLocation();
-  const roomName = location.state.roomName;
+  let roomName = useParams()['id'];
 
   useEffect(() => {
     console.log('useEffect', options);
@@ -167,16 +160,6 @@ function RoomEnter(req) {
 
   // RTC Code
 
-  function makeConnection() {
-    // peerConnection을 각 브라우저에 만들어준다.
-    myPeerConnection = new RTCPeerConnection({});
-    myPeerConnection.addEventListener('icecandidate', handleIce);
-    myPeerConnection.addEventListener('addstream', handleAddStream);
-    myStream // 양쪽 브라우저의 카메라, 마이크 데이터 stream 을 받아와서 그걸 연결 안에 집어넣어줌
-      .getTracks()
-      .forEach((track) => myPeerConnection.addTrack(track, myStream));
-  }
-
   function handleIce(data) {
     socket.emit('ice', data.candidate, roomName);
     console.log('sent candidate');
@@ -191,12 +174,15 @@ function RoomEnter(req) {
   return (
     <>
       <Container fluid>
-        <div className="w-full">
-          <div className="flex justify-between float-left w-6/12 p-7 h-80">
-            <div
-              className="flex-initial w-full min-w-min"
-              style={{ flexBasis: '330px', flexGrow: 0, flexShrink: 0 }}
+        <div
+          className='w-full'
+          >
+          <div
+            className="flex justify-between float-left w-6/12 p-7 h-80"
             >
+            <div
+              className='flex-initial w-full min-w-min'
+              style={{ flexBasis: '330px', flexGrow: 0, flexShrink: 0}}>
               <video
                 ref={myFaceSrc}
                 autoPlay={cameraOff}
@@ -206,28 +192,25 @@ function RoomEnter(req) {
                 height="330"
               />
             </div>
-            <div className="flex-initial" style={{ flexShrink: 1 }}>
-              {muteBtn === 'Mute' ? (
+            <div
+              className='flex-initial'
+              style={{ flexShrink: 1}}>
+              {muteBtn === 'Mute' ?
                 <Button onClick={handleMuteClick}>
-                  <FontAwesomeIcon className="text-3xl" icon={faMicrophone} />
-                </Button>
-              ) : (
+                  <FontAwesomeIcon className='text-3xl' icon={faMicrophone} />
+                </Button>:
                 <Button onClick={handleMuteClick}>
-                  <FontAwesomeIcon
-                    className="text-3xl"
-                    icon={faMicrophoneSlash}
-                  />
+                  <FontAwesomeIcon className='text-3xl' icon={faMicrophoneSlash} />
                 </Button>
-              )}
-              {cameraBtn === 'Turn Camera Off' ? (
+              }
+              {cameraBtn === 'Turn Camera Off' ?
                 <Button type="primary" onClick={handleCameraClick}>
-                  <FontAwesomeIcon className="text-3xl" icon={faVideo} />
-                </Button>
-              ) : (
+                  <FontAwesomeIcon className='text-3xl' icon={faVideo}/>
+                </Button> :
                 <Button type="primary" onClick={handleCameraClick}>
-                  <FontAwesomeIcon className="text-3xl" icon={faVideoSlash} />
+                  <FontAwesomeIcon className='text-3xl' icon={faVideoSlash} />
                 </Button>
-              )}
+              }
               <Select
                 style={{ width: 300 }}
                 defaultValue={selected}
@@ -238,7 +221,8 @@ function RoomEnter(req) {
               </Select>
             </div>
           </div>
-          <div className="float-left w-6/12">
+          <div
+            className='float-left w-6/12'>
             <video
               ref={peerFaceSrc}
               autoPlay
@@ -249,7 +233,7 @@ function RoomEnter(req) {
             />
           </div>
         </div>
-        <div class="divider w-full h-px"></div>
+        <div class="divider w-full h-px"></div> 
       </Container>
     </>
   );

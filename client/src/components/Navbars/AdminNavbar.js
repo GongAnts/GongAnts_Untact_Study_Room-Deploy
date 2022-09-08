@@ -17,7 +17,7 @@
 */
 import React, { Component, useState, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
-import { useLocation, useHistory } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 
 import { Link } from 'react-router-dom';
 import { LOGOUT_REQUEST } from 'redux/types';
@@ -26,21 +26,14 @@ import { push } from 'react-router-redux';
 import axios from 'axios';
 import routes from 'routes.js';
 
-// UI Components //
 import Button from '@mui/material/Button';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import SearchIcon from '@mui/icons-material/Search';
 import { pointColor } from 'styles/color';
-import SearchModal from 'components/Search/SearchModal';
-
-// Icon //
-import GongImg from 'assets/img/ms-icon-70x70.png';
 
 function Header() {
   const location = useLocation();
-  const history = useHistory();
   // const mobileSidebarToggle = (e) => {
   //   e.preventDefault();
   //   document.documentElement.classList.toggle('nav-open');
@@ -64,8 +57,7 @@ function Header() {
           type: LOGOUT_REQUEST,
         });
       });
-    history.push('/');
-    history.go(0);
+    window.location = '/';
   }, [dispatch]);
 
   const [anchorEl, setAnchorEl] = useState(null);
@@ -80,7 +72,7 @@ function Header() {
   return (
     <div class="drawer-content flex flex-col">
       <div class="w-full navbar bg-base-200 drop-shadow-lg">
-        {/* <div class="flex-none lg:hidden">
+        <div class="flex-none lg:hidden">
           <label for="my-drawer-3" class="btn btn-square btn-ghost">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -89,30 +81,18 @@ function Header() {
               class="inline-block w-6 h-6 stroke-current"
             >
               <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
                 d="M4 6h16M4 12h16M4 18h16"
               ></path>
             </svg>
           </label>
-        </div> */}
+        </div>
         <div class="flex-1 px-2 mx-2">
-          <a href="/">
-            <img src={GongImg} style={{ width: '30px', float: 'left' }} />
-            GongAnts
-          </a>
+          <a href="/">GongAnts</a>
         </div>
         <div class="flex-none hidden lg:block">
-          <span>
-            <label for="search-modal" class="modal-button">
-              <SearchIcon
-                className="cursor-pointer"
-                style={{ fontSize: '1.7em', color: pointColor }}
-              />
-            </label>
-            <SearchModal />
-          </span>
           <Button
             className="text-2xl"
             aria-controls={open ? 'basic-menu' : undefined}

@@ -48,3 +48,9 @@
 - v1.0.10
   - client 친구 찾기 UI
   - server schedule category
+
+- v1.0.11
+  - client schedule category update
+  - server 
+    - 프로젝트 모듈화
+    - 친구 찾기, 친구 리스트 조회

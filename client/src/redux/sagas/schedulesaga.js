@@ -23,10 +23,7 @@ const scheduleloadAPI = (data) => {
       'Content-Type': 'application/json',
     },
   };
-  return axios.get(
-    `/schedule/monthly?year=${data.year}&month=${data.month}`,
-    config,
-  );
+  return axios.get(`/schedule/monthly?year=${data.year}&month=${data.month}`, config);
 };
 
 function* scheduleload(action) {
@@ -86,7 +83,7 @@ const calendareditAPI = (data) => {
       'Content-Type': 'application/json',
     },
   };
-  return axios.put('/schedule', data, config);
+  return axios.post('/schedule/modify', data, config);
 };
 
 function* calendaredit(action) {
@@ -97,6 +94,7 @@ function* calendaredit(action) {
       type: SCHEDULE_UPDATE_SUCCESS,
       payload: result.data,
     });
+    yield put(push('/admin/calendar'));
   } catch (e) {
     yield put({
       type: SCHEDULE_UPDATE_FAILURE,
@@ -111,7 +109,12 @@ function* watchcalendarEdit() {
 
 // schedule delete
 const calendardeleteAPI = (data) => {
-  return axios.delete(`/schedule?id=${data}`);
+  const config = {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  };
+  return axios.delete(`/schedule/delete?id=${data}`, config);
 };
 
 function* calendarDelete(action) {

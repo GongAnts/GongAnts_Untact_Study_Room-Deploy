@@ -1,5 +1,4 @@
 import React, { useState, useLayoutEffect } from 'react';
-import { useHistory } from 'react-router-dom';
 
 // react-bootstrap components
 import { Badge, Navbar, Nav, Container, Row, Col } from 'react-bootstrap';
@@ -11,12 +10,15 @@ import { Input, Form } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 import io from 'socket.io-client';
 
-import { TODO_WRITE_REQUEST, TODO_TODAY_REQUEST } from 'redux/types';
+import {
+  TODO_WRITE_REQUEST,
+  TODO_TODAY_REQUEST,
+  TODO_CHECK,
+} from 'redux/types';
 
 let roomName;
 
 function Room(req) {
-  const history = useHistory();
   const [form, setform] = useState({
     todo_title: '',
   });
@@ -41,23 +43,34 @@ function Room(req) {
   //   });
   // };
 
-  // const onHandleCheck = (todo_id) => {
-  //   const body = { todo_id };
+  const onHandleCheck = (todo_id) => {
+    const body = { todo_id };
 
-  //   dispatch({
-  //     type: TODO_CHECK,
-  //     payload: body,
-  //   });
-  //   req.history.go(0);
-  // };
+    dispatch({
+      type: TODO_CHECK,
+      payload: body,
+    });
+    req.history.go(0);
+  };
+
+  const arrTodo = todoToday.map((todo, idx) => {
+    const status = todo.todo_check;
+    return (
+      <p key={idx}>
+        <Radio
+          onClick={() => onHandleCheck(todo.todo_id)}
+          style={{ marginTop: '18px' }}
+          checked={status === 1}
+        >
+          {todo.todo_title}
+        </Radio>
+      </p>
+    );
+  });
 
   async function onEnterRoom(values) {
     roomName = values['room-name'];
-    history.push({
-      pathname: `/admin/room/${roomName}`,
-      state: { roomName: roomName },
-    });
-    // window.location.replace(`room/${roomName}`);
+    window.location.replace(`room/${roomName}`);
   }
 
   // useLayoutEffect(() => {
@@ -70,7 +83,7 @@ function Room(req) {
     <>
       <Container>
         <Form
-          className="grid text-center place-content-center h-max m-40"
+          className='grid text-center place-content-center h-max m-40'
           name="basic"
           labelCol={{
             span: 8,
@@ -85,7 +98,7 @@ function Room(req) {
           autoComplete="off"
         >
           <Form.Item
-            className="text-center w-50"
+            className='text-center w-50'
             label="방 아이디를 입력하세요."
             name="room-name"
             rules={[
@@ -102,13 +115,16 @@ function Room(req) {
           </Form.Item>
 
           <Form.Item
-            className="mt-3"
+            className='mt-3'
             wrapperCol={{
               offset: 8,
               span: 16,
             }}
           >
-            <button class="btn btn-outline btn-primary w-64" htmlType="submit">
+            <button
+              class="btn btn-outline btn-primary w-64"
+              htmlType="submit"
+            >
               Submit
             </button>
           </Form.Item>
