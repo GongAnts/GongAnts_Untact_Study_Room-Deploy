@@ -11,6 +11,7 @@ stages:
 server-build:
   stage: server-build
   script:
+    - docker system prune -af
     - cd ./server/
     - echo "$ENV_SERVER" > ./.env
     - docker container ls -a
@@ -35,5 +36,5 @@ client-build:
 client-deploy:
   stage: client-deploy
   script:
-    - docker run -d -p 3000:3000 --name gongans-server --restart always gongants-docker/gongants-server:latest
+    - docker run -d -p 3000:3000 --name gongants-client --restart always gongants-docker/gongants-client:latest
     - docker container ls -a
