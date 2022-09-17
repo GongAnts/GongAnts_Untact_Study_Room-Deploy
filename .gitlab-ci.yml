@@ -1,9 +1,39 @@
-stages:
-  - build
+image: docker:git
+services:
+- docker:latest
 
-build:
-  stage: build
+stages:
+  - server-build
+  - server-deploy
+  - client-build
+  - client-deploy
+
+server-build:
+  stage: server-build
   script:
-    - cd /builds/22_HF077/deploy-gongants_untact_study_room/server/
-    - docker build . -t gongants-docker/gongants-deploy:latest
-    - docker run -p 4000:4000 -d gongants-docker/gongants-deploy:latest
+    - cd ./server/
+    - echo "$ENV_SERVER" > ./.env
+    - docker container ls -a
+    - docker container rm -f gongants-server
+    - docker build . -t gongants-docker/gongants-server:latest
+
+server-deploy:
+  stage: server-deploy
+  script:
+    - docker run -d -p 4000:4000 --name gongants-server --restart always gongants-docker/gongants-server:latest
+    - docker container ls -a
+
+client-build:
+  stage: client-build
+  script:
+    - cd ./client/
+    - echo "$ENV_CLIENT" > ./.env
+    - docker container ls -a
+    - docker container rm -f gongants-client
+    - docker build . -t gongants-docker/gongants-client:latest
+
+client-deploy:
+  stage: client-deploy
+  script:
+    - docker run -d -p 3000:3000 --name gongans-server --restart always gongants-docker/gongants-server:latest
+    - docker container ls -a
