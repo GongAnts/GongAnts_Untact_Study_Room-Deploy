@@ -8,6 +8,6 @@ RUN npm run deploy:install
 
 COPY . .
 
-EXPOSE 4000
+EXPOSE 3000
 
 CMD ["npm", "run", "deploy:production"]
