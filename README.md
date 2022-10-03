@@ -62,3 +62,6 @@
 - v1.1.2
   - client 친구 기능 리덕스 추가
   - server 로그인 응답 이슈 해결
+
+- v1.1.3
+   - server api version 2 개선
