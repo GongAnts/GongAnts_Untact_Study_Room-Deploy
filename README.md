@@ -65,3 +65,6 @@
 
 - v1.1.3
    - server api version 2 개선
+
+- v1.1.4
+   - production logger 추가
