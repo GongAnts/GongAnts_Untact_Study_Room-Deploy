@@ -68,3 +68,6 @@
 
 - v1.1.4
    - production logger 추가
+
+- v1.1.5
+   - client 친구 기능 추가
